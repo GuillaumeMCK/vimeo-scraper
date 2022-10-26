@@ -36,7 +36,7 @@ def init_segment_fetcher(urls):
         log.info('Hovering video to get the init segment url')
         # 2.3. Loop through the vimeo tags and click on them
         for vimeo_tag in tqdm(vimeo_tags):
-            vimeo_tag.hover()
+            vimeo_tag.click()
         # Get the url of the video init segment in the network events
         videos_init_segments = [url for url in browser.network_events_urls if "master.json" in url]
         log.info(f'Found {len(videos_init_segments)} init segments')
