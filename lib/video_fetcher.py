@@ -10,7 +10,7 @@ import subprocess as sp
 import os
 import distutils.core
 import argparse
-from urlparse3 import urlparse
+from urllib.parse import urlparse
 import datetime
 
 import random
@@ -24,8 +24,8 @@ OUT_PREFIX = TIMESTAMP + '-' + SALT
 
 # Create temp and output paths based on where the executable is located
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-TEMP_DIR = os.path.join(BASE_DIR, "temp")
-OUTPUT_DIR = os.path.join(BASE_DIR, "output")
+TEMP_DIR = os.path.join(BASE_DIR, "../../temp")
+OUTPUT_DIR = os.path.join(BASE_DIR, "../../output")
 
 for directory in (TEMP_DIR, OUTPUT_DIR):
     if not os.path.exists(directory):

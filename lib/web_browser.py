@@ -24,14 +24,15 @@ class web_browser():
             self.browser = self.playwright_instance.chromium.launch(
                 headless=self.headless,
                 executable_path=get_config("chrome_directory"),
-                args=['--disable-blink-features=AutomationControlled',  # bypass bot detection
-                      '--no-sandbox',
-                      '--disable-setuid-sandbox',
-                      '--disable-dev-shm-usage',
-                      '--disable-accelerated-2d-canvas',
-                      '--no-first-run',
-                      '--no-zygote',
-                      '--disable-gpu'])
+                args=['--disable-blink-features=AutomationControlled', # bypass bot detection
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage',
+                        '--disable-accelerated-2d-canvas',
+                        '--no-first-run',
+                        '--no-zygote',
+                        '--disable-gpu'
+                        ])
             
         except Exception as e:
             log.error(f'Something went wrong while starting the browser: {e}')
