@@ -11,7 +11,7 @@ from psutil import process_iter
 from util.logger import log
 
 
-class web_browser():
+class WebBowser():
 
     def __init__(self, cookies = [], headless=True) -> None:
         self.network_events_urls = []

@@ -58,7 +58,7 @@ class NiceLogger(Logger):
         if self.isEnabledFor(SUCC_INFO):
             self._log(SUCC_INFO, msg, args, **kwargs)
 
-    def failures(self, msg, *args, **kwargs):
+    def failure(self, msg, *args, **kwargs):
         # Add failure log methode
         if self.isEnabledFor(FAIL_INFO):
             self._log(FAIL_INFO, msg, args, **kwargs)
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     logger.debug("a")
     logger.status("b")
     logger.success("c")
-    logger.failures("d")
+    logger.failure("d")
     logger.info("e")
     logger.warning("f")
     logger.error("g")
