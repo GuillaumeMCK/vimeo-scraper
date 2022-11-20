@@ -21,12 +21,12 @@ FAIL_INFO = 13
 # Log Formats
 _FMT = "{message}"
 _FORMATS = {
-    DEBUG: f'[{_BOLD+_GRAY}DEBUG{_RESET}] {_FMT}',
+    DEBUG: f'[{_BOLD + _GRAY}DEBUG{_RESET}] {_FMT}',
     STAT_INFO: f'[{_MAGENTA}x{_RESET}] {_FMT}',
-    SUCC_INFO: f'[{_BOLD+_GREEN}+{_RESET}] {_FMT}',
-    FAIL_INFO: f'[{_BOLD+_RED}-{_RESET}] {_FMT}',
-    INFO: f'[{_BOLD+_BLUE}*{_RESET}] {_FMT}',
-    WARNING: f'[{_BOLD+_YELLOW}!{_RESET}] {_FMT}',
+    SUCC_INFO: f'[{_BOLD + _GREEN}+{_RESET}] {_FMT}',
+    FAIL_INFO: f'[{_BOLD + _RED}-{_RESET}] {_FMT}',
+    INFO: f'[{_BOLD + _BLUE}*{_RESET}] {_FMT}',
+    WARNING: f'[{_BOLD + _YELLOW}!{_RESET}] {_FMT}',
     ERROR: f'[{_RED}ERROR{_RESET}] {_FMT}',
     CRITICAL: f'[{_RED}CRITICAL{_RESET}] {_FMT}',
 }
@@ -64,7 +64,7 @@ class NiceLogger(Logger):
             self._log(FAIL_INFO, msg, args, **kwargs)
 
 
-def setup_logger(name, loglevel=DEBUG):
+def setup_logger(name, loglevel=DEBUG) -> Logger:
     # Set up logger and add handlers
     setLoggerClass(NiceLogger)
 
@@ -95,15 +95,14 @@ def setup_logger(name, loglevel=DEBUG):
     return logger
 
 
+log = setup_logger(__name__)
+
 if __name__ == "__main__":
-    logger = setup_logger(__name__)
-    logger.debug("a")
-    logger.status("b")
-    logger.success("c")
-    logger.failure("d")
-    logger.info("e")
-    logger.warning("f")
-    logger.error("g")
-    logger.critical("h")
-else:
-    log = setup_logger(__name__)
+    log.debug("a")
+    log.status("b")
+    log.success("c")
+    log.failure("d")
+    log.info("e")
+    log.warning("f")
+    log.error("g")
+    log.critical("h")

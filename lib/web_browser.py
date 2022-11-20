@@ -1,53 +1,54 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+from time import perf_counter
 
-from tokenize import String
-from util.config_file_handler import get_config
-from time import sleep
-
-from playwright.sync_api import sync_playwright
-from psutil import process_iter
-# import logger from util.logger import log
 from util.logger import log
+from playwright.sync_api import sync_playwright
 
 
-class WebBowser():
+class WebBrowser:
 
-    def __init__(self, cookies = [], headless=True) -> None:
-        self.network_events_urls = []
-        self.cookies = cookies
-        self.headless = headless
+    def __init__(self, browser_dir: str, cookies=None, headless=True) -> None:
+        if cookies is None:
+            cookies = []
+        self.browser_dir: str = browser_dir
+        self.headless: bool = headless
+        self.cookies: list[dict] = cookies
+        self.network_events_urls: list[str] = []
+        self.pw_instance = None
+        self.browser = None
+        self.page = None
+        self.context = None
 
     def start(self) -> None:
         try:
-            self.playwright_instance = sync_playwright().start()
-            self.browser = self.playwright_instance.chromium.launch(
+            self.pw_instance = sync_playwright().start()
+            self.browser = self.pw_instance.chromium.launch(
                 headless=self.headless,
-                executable_path=get_config("chrome_directory"),
-                args=['--disable-blink-features=AutomationControlled', # bypass bot detection
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--disable-dev-shm-usage',
-                        '--disable-accelerated-2d-canvas',
-                        '--no-first-run',
-                        '--no-zygote',
-                        '--disable-gpu'
-                        ])
-            
+                executable_path=self.browser_dir,
+                args=['--disable-blink-features=AutomationControlled',  # bypass bot detection
+                      '--no-sandbox',
+                      '--disable-setuid-sandbox',
+                      '--disable-dev-shm-usage',
+                      '--disable-accelerated-2d-canvas',
+                      '--no-first-run',
+                      '--no-zygote',
+                      '--disable-gpu'
+                      ])
         except Exception as e:
             log.error(f'Something went wrong while starting the browser: {e}')
             exit(1)
 
-    def new_page(self) -> str:
+    def new_page(self) -> None:
         try:
             self.context = self.browser.new_context(
-                viewport={ 'width': 1280, 'height': 1024 }
+                viewport={'width': 1280, 'height': 1024}
             )
             self.page = self.context.new_page()
             self.context.add_cookies(self.cookies)
             self.page.on('request', lambda req: self.network_events_urls.append(req.url))
             self.page.on('response', lambda res: self.network_events_urls.append(res.url))
-                
+
             self.page = self.context.new_page()
             self.page.on("response", lambda response: self.network_events_urls.append(response.url))
         except Exception as e:
@@ -60,11 +61,10 @@ class WebBowser():
         except Exception as e:
             log.error(f'Something went wrong while going to {url}: {e}')
 
-    def load_js(self) -> None:
-        try:
+    def load_js(self, time=0.5) -> None:
+        start_time = perf_counter()
+        while perf_counter() - start_time < time:
             self.page.wait_for_load_state("domcontentloaded")
-        except Exception as e:
-            log.error(f'Something went wrong while loading JS: {e}')
 
     def quit_page(self) -> None:
         try:
@@ -76,7 +76,7 @@ class WebBowser():
     def stop(self) -> None:
         try:
             self.browser.close()
-            self.playwright_instance.stop()
+            self.pw_instance.stop()
         except Exception as e:
             log.error(f'Something went wrong while stopping the browser: {e}')
 
@@ -92,10 +92,7 @@ class WebBowser():
         element_handle.screenshot(path=full_path)
 
     def get_html(self) -> str:
-        return self.page.content()
-    
+        return self.page.inner_html("html")
+
     def click(self, selector: str) -> None:
         self.page.click(selector)
-        
-    def get_xpath(self, selector: str) -> str:
-        return self.page.query_selector(selector).xpath()
